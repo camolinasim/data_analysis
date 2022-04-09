@@ -711,7 +711,7 @@ font-size: 19px;
            <property name="widgetResizable">
             <bool>true</bool>
            </property>
-           <widget class="QWidget" name="scrollAreaWidgetContents">
+           <widget class="QWidget" name="scroll_area">
             <property name="geometry">
              <rect>
               <x>0</x>
