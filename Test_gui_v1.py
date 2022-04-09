@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 
 
-from PyQt5.QtWidgets import QApplication, QMainWindow, QPushButton, QLabel, QVBoxLayout, QWidget, QDialog, QListWidget, \
-    QVBoxLayout, QListWidgetItem
+from PyQt5.QtWidgets import *
 from PyQt5.uic import loadUi
 from PyQt5 import QtWidgets
 import sys, os, glob
@@ -91,6 +90,12 @@ class DataAnalysisWindow(QWidget):
         loadUi("data_analysis.ui", self)
         self.btn_open_pcap.clicked.connect(self.read_pcap)
 
+
+
+        # widget_stuff = QWidget()
+        # widget_stuff.setLayout(layout1)
+        # self.setCentralWidget(widget_stuff)
+
     def read_pcap(self):
             ########### OPENING PCAP ###########
             Tk().withdraw()
@@ -132,8 +137,10 @@ class DataAnalysisWindow(QWidget):
             rows = pcap_content.split("\n")
             # print(rows[2])
             for row in rows:
-                # layout = QHBoxLayout()
+                self.table_view.layout().addWidget(QLabel(row))
                 print(row)  # reemplazar con lo que quieres que haga el loop
+            #might need a stack here
+
 
 
 class ProjectCreateWindow(QWidget):
