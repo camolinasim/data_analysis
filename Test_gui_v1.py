@@ -14,6 +14,7 @@ from os import path
 import pandas as pd
 import re
 from os.path import exists
+import random
 
 # importing askopenfile function
 # from class filedialog
@@ -133,6 +134,8 @@ class DataAnalysisWindow(QWidget):
                         label_to_delete = self.table_view.findChild(QLabel, str(i))
                         print("hiding label: " + label_to_delete.text())
                         label_to_delete.setHidden(True)
+                        idk = random.random()
+                        label_to_delete.setObjectName(str(idk))
                     os.remove(pcap_folder_location + "\\how_many_labels_to_delete.txt")
             except AttributeError:
                 print("empty window")
