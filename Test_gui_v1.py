@@ -93,6 +93,10 @@ class DataAnalysisWindow(QWidget):
         super(DataAnalysisWindow, self).__init__()
         loadUi("data_analysis.ui", self)
         self.btn_open_pcap.clicked.connect(self.read_pcap)
+        self.filter_bar.editingFinished.connect(self.call_thskark_filter)
+
+    def call_thskark_filter(self):
+        print(self.filter_bar.text())
 
     def read_pcap(self):
 
