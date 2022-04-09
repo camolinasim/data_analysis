@@ -12,6 +12,8 @@ import shutil
 import os.path
 from os import path
 import pandas as pd
+import re
+from os.path import exists
 
 # importing askopenfile function
 # from class filedialog
@@ -89,58 +91,105 @@ class DataAnalysisWindow(QWidget):
         super(DataAnalysisWindow, self).__init__()
         loadUi("data_analysis.ui", self)
         self.btn_open_pcap.clicked.connect(self.read_pcap)
-
-
+        #get the last pcap no. and delete till there
 
         # widget_stuff = QWidget()
         # widget_stuff.setLayout(layout1)
         # self.setCentralWidget(widget_stuff)
 
+    # def clear_frame(self):
+    #     for widgets in self.winfo_children():
+    #         widgets.destroy()
+
     def read_pcap(self):
-            ########### OPENING PCAP ###########
-            Tk().withdraw()
-            path_of_selected_pcap = askopenfilename()
-            # correcting path from C:/x/x/x/x.pcap -> C:\\x\\x\\x\\x\ x.pcap
-            path_of_selected_pcap = os.path.normpath(path_of_selected_pcap)
-            path_of_selected_pcap_no_extension = path_of_selected_pcap.replace(".pcap", "")
-            pcap_folder_location = path_of_selected_pcap.rsplit('http.pcap', 1)
-            pcap_folder_location = pcap_folder_location[0].rsplit('\\', 1)[0]
-            csv_folder = pcap_folder_location + "\\csv_files"
-            name_of_csv = os.path.basename(path_of_selected_pcap_no_extension + '.csv')
 
-            csv = csv_folder + "\\" + name_of_csv
-            csv_exists = os.path.exists(csv)
-            print(csv)
-            print(csv_exists)
-            if (not csv_exists):
-                run_this_shit = '"C:\\Program Files\\Wireshark\\tshark.exe" -r ' + path_of_selected_pcap + ' -T fields -E header=y -E separator=, -E quote=d -E occurrence=f -e frame.number -e _ws.col.Time -e ip.src -e ip.dst -e ip.proto -e frame.len -e _ws.col.Info >' + path_of_selected_pcap_no_extension + '.csv'
-                stream = os.popen(run_this_shit)
-                output = stream.read()
-                print(output)
 
-            ########### CREATING FOLDER FOR CSVs ###########
 
-            if not path.exists(csv_folder):
-                os.mkdir(csv_folder)
+        ########### setup ###########
+        Tk().withdraw()
+        path_of_selected_pcap = askopenfilename()
+        # correcting path from C:/x/x/x/x.pcap -> C:\\x\\x\\x\\x\ x.pcap
+        path_of_selected_pcap = os.path.normpath(path_of_selected_pcap)
+        print(path_of_selected_pcap)
+        path_of_selected_pcap_no_extension = path_of_selected_pcap.replace(".pcap", "")
+        pcap_folder_location = path_of_selected_pcap.rsplit('http.pcap', 1)
+        pcap_folder_location = pcap_folder_location[0].rsplit('\\', 1)[0]
+        print(pcap_folder_location)
+        csv_folder = pcap_folder_location + "\\csv_files"
 
-            ########## CREATING DATAFRAME FOR DATA MANIPULATION ###########
-            if (not csv_exists):
-                csv_path = path_of_selected_pcap_no_extension + '.csv'
-                move_this_pcap = csv_path
-                over_here = csv_folder
-                shutil.move(move_this_pcap, over_here)
+        ##clear the window ##
+        # how many labels need to be deleted? -> this textfile will tell you
+        number_of_labels_to_delete = 0
 
-            csv_path = csv_folder + "\\" + name_of_csv
-            df = pd.read_csv(csv_path)
-            pcap_content = df.to_string(index=False)
-            # print(pcap_content)
-            rows = pcap_content.split("\n")
-            # print(rows[2])
-            for row in rows:
-                self.table_view.layout().addWidget(QLabel(row))
-                print(row)  # reemplazar con lo que quieres que haga el loop
-            #might need a stack here
+        file_exists = exists(pcap_folder_location + "\\how_many_labels_to_delete.txt")
+        if file_exists:
+            print("file exists!!!!!!!!!!!!")
+            try:
+                with open(pcap_folder_location + "\\how_many_labels_to_delete.txt") as f:
+                    read_text = f.readlines()
+                    number_of_labels_to_delete = int(read_text[0])
+                    f.close()
+                    for i in range(0, number_of_labels_to_delete):
+                        label_to_delete = self.table_view.findChild(QLabel, str(i))
+                        print("hiding label: " + label_to_delete.text())
+                        label_to_delete.setHidden(True)
+                    os.remove(pcap_folder_location + "\\how_many_labels_to_delete.txt")
+            except AttributeError:
+                print("empty window")
+        else:
+            print("empty window")
 
+
+
+
+
+        name_of_csv = os.path.basename(path_of_selected_pcap_no_extension + '.csv')
+
+        csv = csv_folder + "\\" + name_of_csv
+        csv_exists = os.path.exists(csv)
+        # print(csv)
+        # print(csv_exists)
+        if (not csv_exists):
+            thsark_read_pcap = '"C:\\Program Files\\Wireshark\\tshark.exe" -r ' + path_of_selected_pcap + ' -T fields -E header=y -E separator=, -E quote=d -E occurrence=f -e frame.number -e _ws.col.Time -e ip.src -e ip.dst -e ip.proto -e frame.len -e _ws.col.Info >' + path_of_selected_pcap_no_extension + '.csv'
+            stream = os.popen(thsark_read_pcap)
+            output = stream.read()
+            # print(output)
+
+        ########### CREATING FOLDER FOR CSVs ###########
+
+        if not path.exists(csv_folder):
+            os.mkdir(csv_folder)
+
+        ########## CREATING DATAFRAME FOR DATA MANIPULATION ###########
+        if (not csv_exists):
+            csv_path = path_of_selected_pcap_no_extension + '.csv'
+            move_this_pcap = csv_path
+            over_here = csv_folder
+            shutil.move(move_this_pcap, over_here)
+
+        csv_path = csv_folder + "\\" + name_of_csv
+        df = pd.read_csv(csv_path)
+        pcap_content = df.to_string(index=False)
+        rows = pcap_content.split("\n")
+        packet_rows = []
+        for row in rows:
+
+            packet_row = QLabel(row)
+            try:
+
+                packet_name = re.search(r'\d+', packet_row.text()).group()
+            except AttributeError:
+                packet_name = "0"
+            packet_row.setObjectName(packet_name)
+            packet_rows.append(packet_row)
+
+
+
+
+            self.table_view.layout().addWidget(packet_row)
+            # print(row.name())  # reemplazar con lo que quieres que haga el loop
+        f = open(pcap_folder_location + "\\how_many_labels_to_delete.txt", "w")
+        f.write(str(len(packet_rows)))
 
 
 class ProjectCreateWindow(QWidget):
@@ -197,7 +246,6 @@ class SelectedProjectWindow(QWidget):
         print("###RUNNING CORE###")
         vm_list = "ubuntu(practicum)"
         controller.start_vm(vm_list)
-
 
 
 app = QApplication(sys.argv)
