@@ -115,6 +115,7 @@ class DataAnalysisWindow(QWidget):
         path_of_selected_pcap = askopenfilename()
         # correcting path from C:/x/x/x/x.pcap -> C:\\x\\x\\x\\x\ x.pcap
         path_of_selected_pcap = os.path.normpath(path_of_selected_pcap)
+        self.tab_father.setTabText(0,str(os.path.basename(path_of_selected_pcap)))
         path_of_selected_pcap_no_extension = path_of_selected_pcap.replace(".pcap", "")
         pcap_folder_location = path_of_selected_pcap.rsplit('http.pcap', 1)
         pcap_folder_location = pcap_folder_location[0].rsplit('\\', 1)[0]
