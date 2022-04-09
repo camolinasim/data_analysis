@@ -121,7 +121,7 @@ class DataAnalysisWindow(QWidget):
 
         ########## CALLING TSHARK ON SELECTED PCAP ###########
         if not csv_exists:
-            thsark_read_pcap = '"C:\\Program Files\\Wireshark\\tshark.exe" -r ' + path_of_selected_pcap + ' -T fields -E header=y -E separator=, -E quote=d -E occurrence=f -e frame.number -e _ws.col.Time -e ip.src -e ip.dst -e ip.proto -e frame.len -e _ws.col.Info >' + path_of_selected_pcap_no_extension + '.csv'
+            thsark_read_pcap = 'tshark -r ' + path_of_selected_pcap + ' -T fields -E header=y -E separator=, -E quote=d -E occurrence=f -e frame.number -e _ws.col.Time -e ip.src -e ip.dst -e ip.proto -e frame.len -e _ws.col.Info >' + path_of_selected_pcap_no_extension + '.csv'
             stream = os.popen(thsark_read_pcap)
             output = stream.read()
 
@@ -138,6 +138,7 @@ class DataAnalysisWindow(QWidget):
             shutil.move(move_this_pcap, over_here)
 
         csv_path = csv_folder + "\\" + name_of_csv
+        # print(csv_path)
         df = pd.read_csv(csv_path)
         pcap_content = df.to_string(index=False)
         rows = pcap_content.split("\n")

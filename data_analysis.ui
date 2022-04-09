@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1563</width>
-    <height>650</height>
+    <width>1618</width>
+    <height>875</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -540,105 +540,10 @@ QAbstractSpinBox {
     min-width: 50px;
 }</string>
   </property>
-  <widget class="QFrame" name="frame_7">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>170</y>
-     <width>149</width>
-     <height>471</height>
-    </rect>
-   </property>
-   <property name="frameShape">
-    <enum>QFrame::StyledPanel</enum>
-   </property>
-   <property name="frameShadow">
-    <enum>QFrame::Raised</enum>
-   </property>
-   <layout class="QVBoxLayout" name="verticalLayout_10">
-    <item>
-     <widget class="QFrame" name="QFrame_file_selection">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
-      </property>
-      <layout class="QVBoxLayout" name="verticalLayout_3">
-       <item>
-        <widget class="QFrame" name="frame">
-         <property name="frameShape">
-          <enum>QFrame::StyledPanel</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Raised</enum>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout_4">
-          <item>
-           <widget class="QPushButton" name="btn_open_pcap">
-            <property name="text">
-             <string>open pcap</string>
-            </property>
-           </widget>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
-        <widget class="QFrame" name="frame_2">
-         <property name="frameShape">
-          <enum>QFrame::StyledPanel</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Raised</enum>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout_5"/>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </item>
-    <item>
-     <widget class="QFrame" name="QFrame_file_selection_2">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
-      </property>
-      <layout class="QVBoxLayout" name="verticalLayout_11">
-       <item>
-        <widget class="QFrame" name="frame_10">
-         <property name="frameShape">
-          <enum>QFrame::StyledPanel</enum>
-         </property>
-         <property name="frameShadow">
-          <enum>QFrame::Raised</enum>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout_13"/>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </item>
-   </layout>
-  </widget>
   <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
-     <x>600</x>
+     <x>780</x>
      <y>20</y>
      <width>121</width>
      <height>61</height>
@@ -653,17 +558,17 @@ font-size: 19px;
     <string>Data Analysis</string>
    </property>
   </widget>
-  <widget class="QLineEdit" name="search_bar">
+  <widget class="QLineEdit" name="filter_bar">
    <property name="geometry">
     <rect>
      <x>200</x>
      <y>110</y>
-     <width>1051</width>
+     <width>1381</width>
      <height>31</height>
     </rect>
    </property>
    <property name="text">
-    <string>search bar</string>
+    <string>filter bar</string>
    </property>
   </widget>
   <widget class="QTabWidget" name="tab_father">
@@ -671,8 +576,8 @@ font-size: 19px;
     <rect>
      <x>200</x>
      <y>170</y>
-     <width>1383</width>
-     <height>431</height>
+     <width>1381</width>
+     <height>661</height>
     </rect>
    </property>
    <property name="tabShape">
@@ -708,8 +613,8 @@ font-size: 19px;
          <rect>
           <x>0</x>
           <y>0</y>
-          <width>1361</width>
-          <height>382</height>
+          <width>1359</width>
+          <height>612</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_14">
@@ -924,6 +829,19 @@ font-size: 19px;
      </item>
     </layout>
    </widget>
+  </widget>
+  <widget class="QPushButton" name="btn_open_pcap">
+   <property name="geometry">
+    <rect>
+     <x>50</x>
+     <y>110</y>
+     <width>121</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>open pcap</string>
+   </property>
   </widget>
  </widget>
  <resources/>
