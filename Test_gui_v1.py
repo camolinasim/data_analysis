@@ -116,7 +116,9 @@ class DataAnalysisWindow(QWidget):
         tshark_command = 'tshark -r ' + path_of_selected_pcap + ' -Y ' + '\"' + filter_argument + '\"'
         stream = os.popen(tshark_command)
         output = stream.read()
+
         print("Tshark says: " + output)
+        output = output.replace("â†’", "->")
         rows = output.split("\n")
 
         # clear the window before showing thsark's answer.

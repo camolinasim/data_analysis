@@ -568,7 +568,13 @@ font-size: 19px;
     </rect>
    </property>
    <property name="text">
+    <string/>
+   </property>
+   <property name="placeholderText">
     <string>filter bar</string>
+   </property>
+   <property name="clearButtonEnabled">
+    <bool>true</bool>
    </property>
   </widget>
   <widget class="QTabWidget" name="tab_father">
@@ -626,7 +632,16 @@ font-size: 19px;
            <property name="frameShadow">
             <enum>QFrame::Raised</enum>
            </property>
-           <layout class="QVBoxLayout" name="verticalLayout_27"/>
+           <layout class="QVBoxLayout" name="verticalLayout_27">
+            <item alignment="Qt::AlignTop">
+             <widget class="QLabel" name="label_2">
+              <property name="text">
+               <string> frame.number  _ws.col.Time           ip.src           ip.dst  ip.proto  frame.len                                                                               _ws.col.Info
+</string>
+              </property>
+             </widget>
+            </item>
+           </layout>
           </widget>
          </item>
         </layout>
