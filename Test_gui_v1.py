@@ -88,12 +88,17 @@ class MainWindow(QMainWindow):
         print(settings)
 
 
-# to clear any window
-def clearLayout(layout):
+# to clear analyzer window
+def clear_analyzer_window(layout, self):
     while layout.count():
         child = layout.takeAt(0)
         if child.widget():
             child.widget().deleteLater()
+    top_label = QLabel(" frame.number  _ws.col.Time           ip.src           ip.dst  ip.proto  frame.len                                                                               _ws.col.Info\n")
+    top_label.setAlignment(QtCore.Qt.AlignTop)
+
+    self.table_view.layout().addWidget(top_label)
+
 
 
 class DataAnalysisWindow(QWidget):
@@ -107,6 +112,7 @@ class DataAnalysisWindow(QWidget):
 
     def call_tshark_filter(self):
         filter_argument = self.filter_bar.text()
+        show_me_only_what_matters = ' -T fields -E header=y -E separator=, -E quote=d -E occurrence=f -e frame.number -e _ws.col.Time -e ip.src -e ip.dst -e ip.proto -e frame.len -e _ws.col.Info'
         tshark_command = 'tshark -r ' + path_of_selected_pcap + ' -Y ' + '\"' + filter_argument + '\"'
         stream = os.popen(tshark_command)
         output = stream.read()
@@ -114,23 +120,23 @@ class DataAnalysisWindow(QWidget):
         rows = output.split("\n")
 
         # clear the window before showing thsark's answer.
-        clearLayout(self.table_view.layout())
+        clear_analyzer_window(self.table_view.layout(), self)
 
         ########## POPULATING GUI WITH TSHARK'S ANSWER TO FILTER ###########
         for row in rows:
             packet_row = QLabel(row)
             try:
                 packet_name = re.search(r'\d+', packet_row.text()).group()
+                packet_row.setObjectName(packet_name)
+                packet_row.setAlignment(QtCore.Qt.AlignTop)
+                self.table_view.layout().addWidget(packet_row)
             except AttributeError:
                 packet_name = "0"
-            packet_row.setObjectName(packet_name)
-            packet_row.setAlignment(QtCore.Qt.AlignTop)
-            # print(packet_row.text())
-            self.table_view.layout().addWidget(packet_row)
+
 
     def read_pcap(self):
         # clear the window before opening a new pcap
-        clearLayout(self.table_view.layout())
+        clear_analyzer_window(self.table_view.layout(), self)
 
         ########### SETUP - SAVING PCAP PATHS ###########
         Tk().withdraw()
@@ -176,12 +182,13 @@ class DataAnalysisWindow(QWidget):
             packet_row = QLabel(row)
             try:
                 packet_name = re.search(r'\d+', packet_row.text()).group()
+                packet_row.setObjectName(packet_name)
+                packet_row.setAlignment(QtCore.Qt.AlignTop)
+                print(packet_row.text())
+                self.table_view.layout().addWidget(packet_row)
             except AttributeError:
-                packet_name = "0"
-            packet_row.setObjectName(packet_name)
-            packet_row.setAlignment(QtCore.Qt.AlignTop)
-            print(packet_row.text())
-            self.table_view.layout().addWidget(packet_row)
+                packet_name = "0" ## I'm not adding the first line of the text because it doesn't contain any packet data
+
 
         ##once a file is read, enable the filter bar
         self.filter_bar.setEnabled(True)
