@@ -88,34 +88,57 @@ class MainWindow(QMainWindow):
         print(settings)
 
 
+# to clear any window
+def clearLayout(layout):
+    while layout.count():
+        child = layout.takeAt(0)
+        if child.widget():
+            child.widget().deleteLater()
+
+
 class DataAnalysisWindow(QWidget):
     def __init__(self):
         super(DataAnalysisWindow, self).__init__()
         loadUi("data_analysis.ui", self)
         self.btn_open_pcap.clicked.connect(self.read_pcap)
-        self.filter_bar.editingFinished.connect(self.call_thskark_filter)
+        self.filter_bar.setEnabled(False)
 
-    def call_thskark_filter(self):
-        print(self.filter_bar.text())
+
+
+    def call_tshark_filter(self):
+        filter_argument = self.filter_bar.text()
+        tshark_command = 'tshark -r ' + path_of_selected_pcap + ' -Y ' + '\"' + filter_argument + '\"'
+        stream = os.popen(tshark_command)
+        output = stream.read()
+        print("Tshark says: " + output)
+        rows = output.split("\n")
+
+        # clear the window before showing thsark's answer.
+        clearLayout(self.table_view.layout())
+
+        ########## POPULATING GUI WITH TSHARK'S ANSWER TO FILTER ###########
+        for row in rows:
+            packet_row = QLabel(row)
+            try:
+                packet_name = re.search(r'\d+', packet_row.text()).group()
+            except AttributeError:
+                packet_name = "0"
+            packet_row.setObjectName(packet_name)
+            packet_row.setAlignment(QtCore.Qt.AlignTop)
+            # print(packet_row.text())
+            self.table_view.layout().addWidget(packet_row)
 
     def read_pcap(self):
-
-        # to clear the window
-        def clearLayout(layout):
-            while layout.count():
-                child = layout.takeAt(0)
-                if child.widget():
-                    child.widget().deleteLater()
-
         # clear the window before opening a new pcap
         clearLayout(self.table_view.layout())
 
         ########### SETUP - SAVING PCAP PATHS ###########
         Tk().withdraw()
+        global path_of_selected_pcap
         path_of_selected_pcap = askopenfilename()
         # correcting path from C:/x/x/x/x.pcap -> C:\\x\\x\\x\\x\ x.pcap
         path_of_selected_pcap = os.path.normpath(path_of_selected_pcap)
-        self.tab_father.setTabText(0,str(os.path.basename(path_of_selected_pcap)))
+        self.tab_father.setTabText(0, str(os.path.basename(path_of_selected_pcap)))
         path_of_selected_pcap_no_extension = path_of_selected_pcap.replace(".pcap", "")
         pcap_folder_location = path_of_selected_pcap.rsplit('http.pcap', 1)
         pcap_folder_location = pcap_folder_location[0].rsplit('\\', 1)[0]
@@ -147,7 +170,6 @@ class DataAnalysisWindow(QWidget):
         df = pd.read_csv(csv_path)
         pcap_content = df.to_string(index=False)
         rows = pcap_content.split("\n")
-        packet_rows = []
 
         ########## POPULATING GUI WITH EACH ROW OF DATAFRAME  ###########
         for row in rows:
@@ -159,8 +181,11 @@ class DataAnalysisWindow(QWidget):
             packet_row.setObjectName(packet_name)
             packet_row.setAlignment(QtCore.Qt.AlignTop)
             print(packet_row.text())
-            packet_rows.append(packet_row)
             self.table_view.layout().addWidget(packet_row)
+
+        ##once a file is read, enable the filter bar
+        self.filter_bar.setEnabled(True)
+        self.filter_bar.editingFinished.connect(self.call_tshark_filter)
 
 
 class ProjectCreateWindow(QWidget):
