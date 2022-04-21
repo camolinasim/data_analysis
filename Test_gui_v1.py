@@ -102,14 +102,18 @@ def clear_analyzer_window(layout, self):
     top_label.setAlignment(QtCore.Qt.AlignTop)
 
     self.table_view.layout().addWidget(top_label)
+
+
 def add_progressbar(self):
     self.table_view.setAlignment(QtCore.Qt.AlignTop)
     self.pbar = QProgressBar(self)
     self.pbar.setValue(0)
     self.table_view.layout().addWidget(self.pbar)
 
+
 class Thread(QThread):
-    _signal = pyqtSignal(int)
+    int_signal = pyqtSignal(int)
+    obj_signal = pyqtSignal(object)
 
     def __init__(self, rows, df, table_view):
         super(Thread, self).__init__()
@@ -127,6 +131,8 @@ class Thread(QThread):
         ########## POPULATING GUI WITH EACH ROW OF DATAFRAME  ###########
         # global progress
         progress = 0
+        global packet_row
+
         for row in self.rows:
             packet_row = QLabel(row)
             try:
@@ -134,20 +140,21 @@ class Thread(QThread):
                 packet_name = re.search(r'\d+', packet_row.text()).group()
                 packet_row.setObjectName(packet_name)
                 packet_row.setAlignment(QtCore.Qt.AlignTop)
-                # packet_row.setFont(QFont("Sans Serif",10))
 
                 # print(packet_row.text())
-                print("trying to add:" + str(packet_row))
-                self.table.layout().addWidget(packet_row)
-                print('added: ' + str(packet_row))
+                # print("trying to add:" + str(packet_row))
+                # self.table.layout().addWidget(packet_row)
+                # print('added: ' + str(packet_row))
                 ########## values for progress bar  ###########
                 frame_number = int(
                     re.search(r'\d+', packet_row.text()).group())  # first number of a label (i.e. frame number)
                 total_number_of_rows_in_dataframe = self.df.shape[0]
                 progress = int((frame_number * 100) / total_number_of_rows_in_dataframe)
-                self._signal.emit(progress)
+                self.int_signal.emit(progress)
+                self.obj_signal.emit(packet_row)
             except AttributeError:
                 packet_name = "0"  ## I'm not adding the first line of the text because it doesn't contain any packet data
+
 
 class DataAnalysisWindow(QWidget):
     def __init__(self):
@@ -163,7 +170,6 @@ class DataAnalysisWindow(QWidget):
         add_progressbar(self)
         # self.table_view.addStretch()
 
-
         # self.resize(300, 100)
         # self.vbox = QVBoxLayout()
         # self.vbox.addWidget(self.pbar)
@@ -171,12 +177,23 @@ class DataAnalysisWindow(QWidget):
         # self.setLayout(self.vbox)
         # self.show()
 
+    def add_to_table_view(self, msg):
+        # print("from add_to_table_view: " + msg.text())
+        # print("hey i got an object")
+        print("trying to add:" + str(msg.text()))
+        self.label = QLabel("WTF IS GOING ON")
+        table_view.layout().addWidget(msg)
+        table_view.layout().addWidget(self.label)
+
+        self.show()
+        print('added')
+
     def signal_accept(self, msg):
-        # print("in signal")
-        print("msg: " + str(msg))
+        # print("msg: " + str(msg))
         self.pbar.setValue(int(msg))
-        if self.pbar.value() == 99:
+        if self.pbar.value() >= 99:
             self.pbar.setValue(0)
+
 
     def call_tshark_filter(self):
         filter_argument = self.filter_bar.text()
@@ -204,6 +221,10 @@ class DataAnalysisWindow(QWidget):
                 packet_name = "0"
 
     def read_pcap(self):
+
+        # layout
+        global table_view
+        table_view = self.table_view
         # clear the window before opening a new pcap
         clear_analyzer_window(self.table_view.layout(), self)
         # creating progress bar
@@ -251,10 +272,10 @@ class DataAnalysisWindow(QWidget):
         rows = pcap_content.split("\n")
 
         ########## POPULATING GUI WITH EACH ROW OF DATAFRAME  ###########
-        self.thread = Thread(rows,df, self.table_view)
-        self.thread._signal.connect(self.signal_accept)
+        self.thread = Thread(rows, df, self.table_view)
+        self.thread.int_signal.connect(self.signal_accept)
+        self.thread.obj_signal.connect(self.add_to_table_view)
         self.thread.start()
-
 
         ##once a file is read, enable the filter bar
         self.filter_bar.setEnabled(True)
