@@ -17,9 +17,8 @@
    <string notr="true">QLabel::hover
 {
 	background-color: lightblue;
-	
-
 }
+
 
 QToolTip
 {
@@ -625,24 +624,7 @@ font-size: 19px;
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_14">
          <item>
-          <widget class="QFrame" name="table_view">
-           <property name="frameShape">
-            <enum>QFrame::StyledPanel</enum>
-           </property>
-           <property name="frameShadow">
-            <enum>QFrame::Raised</enum>
-           </property>
-           <layout class="QVBoxLayout" name="verticalLayout_27">
-            <item alignment="Qt::AlignTop">
-             <widget class="QLabel" name="label_2">
-              <property name="text">
-               <string> frame.number  _ws.col.Time           ip.src           ip.dst  ip.proto  frame.len                                                                               _ws.col.Info
-</string>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </widget>
+          <layout class="QVBoxLayout" name="table_view"/>
          </item>
         </layout>
        </widget>
