@@ -102,22 +102,52 @@ def clear_analyzer_window(layout, self):
     top_label.setAlignment(QtCore.Qt.AlignTop)
 
     self.table_view.layout().addWidget(top_label)
-
+def add_progressbar(self):
+    self.table_view.setAlignment(QtCore.Qt.AlignTop)
+    self.pbar = QProgressBar(self)
+    self.pbar.setValue(0)
+    self.table_view.layout().addWidget(self.pbar)
 
 class Thread(QThread):
     _signal = pyqtSignal(int)
 
-    def __init__(self):
+    def __init__(self, rows, df, table_view):
         super(Thread, self).__init__()
+        self.rows = rows
+        self.df = df
+        self.table = table_view
+        # print(self.rows, self.df)
 
     def __del__(self):
+        # print("hi")
         self.wait()
 
     def run(self):
-        for i in range(100):
-            time.sleep(0.1)
-            self._signal.emit(i)
+        print("on run")
+        ########## POPULATING GUI WITH EACH ROW OF DATAFRAME  ###########
+        # global progress
+        progress = 0
+        for row in self.rows:
+            packet_row = QLabel(row)
+            try:
 
+                packet_name = re.search(r'\d+', packet_row.text()).group()
+                packet_row.setObjectName(packet_name)
+                packet_row.setAlignment(QtCore.Qt.AlignTop)
+                # packet_row.setFont(QFont("Sans Serif",10))
+
+                # print(packet_row.text())
+                print("trying to add:" + str(packet_row))
+                self.table.layout().addWidget(packet_row)
+                print('added: ' + str(packet_row))
+                ########## values for progress bar  ###########
+                frame_number = int(
+                    re.search(r'\d+', packet_row.text()).group())  # first number of a label (i.e. frame number)
+                total_number_of_rows_in_dataframe = self.df.shape[0]
+                progress = int((frame_number * 100) / total_number_of_rows_in_dataframe)
+                self._signal.emit(progress)
+            except AttributeError:
+                packet_name = "0"  ## I'm not adding the first line of the text because it doesn't contain any packet data
 
 class DataAnalysisWindow(QWidget):
     def __init__(self):
@@ -130,11 +160,7 @@ class DataAnalysisWindow(QWidget):
         self.setWindowTitle('Data Analysis')
         # self.btn = QPushButton('Click me')
         # self.btn.clicked.connect(self.btnFunc)
-        self.table_view.setAlignment(QtCore.Qt.AlignTop)
-        self.pbar = QProgressBar(self)
-        self.pbar.setValue(0)
-        # self.pbar.setAlignment(QtCore.Qt.AlignTop)
-        self.table_view.layout().addWidget(self.pbar)
+        add_progressbar(self)
         # self.table_view.addStretch()
 
 
@@ -144,6 +170,13 @@ class DataAnalysisWindow(QWidget):
         # self.vbox.addWidget(self.btn)
         # self.setLayout(self.vbox)
         # self.show()
+
+    def signal_accept(self, msg):
+        # print("in signal")
+        print("msg: " + str(msg))
+        self.pbar.setValue(int(msg))
+        if self.pbar.value() == 99:
+            self.pbar.setValue(0)
 
     def call_tshark_filter(self):
         filter_argument = self.filter_bar.text()
@@ -174,6 +207,7 @@ class DataAnalysisWindow(QWidget):
         # clear the window before opening a new pcap
         clear_analyzer_window(self.table_view.layout(), self)
         # creating progress bar
+        add_progressbar(self)
 
         ########### SETUP - SAVING PCAP PATHS ###########
         Tk().withdraw()
@@ -210,31 +244,17 @@ class DataAnalysisWindow(QWidget):
 
         csv_path = csv_folder + "\\" + name_of_csv
         # print(csv_path)
-        df = pd.read_csv(csv_path, error_bad_lines=False)
+        # global df
+        df = pd.read_csv(csv_path, engine='python', error_bad_lines=False)
         pcap_content = df.to_string(index=False)
+        # global rows
         rows = pcap_content.split("\n")
 
         ########## POPULATING GUI WITH EACH ROW OF DATAFRAME  ###########
-        progress = 0
-        for row in rows:
-            packet_row = QLabel(row)
-            try:
-                packet_name = re.search(r'\d+', packet_row.text()).group()
-                packet_row.setObjectName(packet_name)
-                packet_row.setAlignment(QtCore.Qt.AlignTop)
-                # packet_row.setFont(QFont("Sans Serif",10))
+        self.thread = Thread(rows,df, self.table_view)
+        self.thread._signal.connect(self.signal_accept)
+        self.thread.start()
 
-                # print(packet_row.text())
-                self.table_view.layout().addWidget(packet_row)
-
-                ########## values for progress bar  ###########
-                frame_number = int(
-                    re.search(r'\d+', packet_row.text()).group())  # first number of a label (i.e. frame number)
-                total_number_of_rows_in_dataframe = df.shape[0]
-                progress = int((frame_number * 100) / total_number_of_rows_in_dataframe)
-                print(progress)
-            except AttributeError:
-                packet_name = "0"  ## I'm not adding the first line of the text because it doesn't contain any packet data
 
         ##once a file is read, enable the filter bar
         self.filter_bar.setEnabled(True)
