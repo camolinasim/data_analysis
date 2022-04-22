@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
-from PyQt5.QtGui import QFont
+
+
 from PyQt5.QtWidgets import *
 from PyQt5 import QtCore
 from PyQt5.uic import loadUi
 from PyQt5 import QtWidgets
-import sys, os, glob
+import sys
+import os
+import glob
 from tkinter import *
 from tkinter.ttk import *
 import controller
@@ -16,12 +19,8 @@ import re
 from os.path import exists
 import random
 
-# for progress bar
-import sys
-import time
-from PyQt5.QtCore import QThread, pyqtSignal
-from PyQt5.QtWidgets import QWidget, QPushButton, QProgressBar, QVBoxLayout, QApplication
-
+# importing askopenfile function
+# from class filedialog
 from tkinter.filedialog import askopenfilename
 
 from random import randint
@@ -63,7 +62,7 @@ class MainWindow(QMainWindow):
             settings = self.openFile()
             window.destroy()
             self.show_selected_project(settings)
-            ##self.close()
+            # self.close()
             self.w = SelectedProjectWindow()
             self.w.generateScenarioList(settings=settings)
             self.w.lbl_project_x.setText("Project: " + settings[0][1])
@@ -92,68 +91,18 @@ class MainWindow(QMainWindow):
 
 
 # to clear analyzer window
-def clear_analyzer_window(layout, self):
-    while layout.count():
-        child = layout.takeAt(0)
-        if child.widget():
-            child.widget().deleteLater()
-    top_label = QLabel(
-        " frame.number  _ws.col.Time           ip.src           ip.dst  ip.proto  frame.len                                                                               _ws.col.Info\n")
-    top_label.setAlignment(QtCore.Qt.AlignTop)
-
-    self.table_view.layout().addWidget(top_label)
+def clear_table(self):
+    while (self.table_view.rowCount() > 0):
+        self.table_view.removeRow(0)
 
 
-def add_progressbar(self):
-    self.table_view.setAlignment(QtCore.Qt.AlignTop)
-    self.pbar = QProgressBar(self)
-    self.pbar.setValue(0)
-    self.table_view.layout().addWidget(self.pbar)
-
-
-class Thread(QThread):
-    int_signal = pyqtSignal(int)
-    obj_signal = pyqtSignal(object)
-
-    def __init__(self, rows, df, table_view):
-        super(Thread, self).__init__()
-        self.rows = rows
-        self.df = df
-        self.table = table_view
-        # print(self.rows, self.df)
-
-    def __del__(self):
-        # print("hi")
-        self.wait()
-
-    def run(self):
-        print("on run")
-        ########## POPULATING GUI WITH EACH ROW OF DATAFRAME  ###########
-        # global progress
-        progress = 0
-        global packet_row
-
-        for row in self.rows:
-            packet_row = QLabel(row)
-            try:
-
-                packet_name = re.search(r'\d+', packet_row.text()).group()
-                packet_row.setObjectName(packet_name)
-                packet_row.setAlignment(QtCore.Qt.AlignTop)
-
-                # print(packet_row.text())
-                # print("trying to add:" + str(packet_row))
-                # self.table.layout().addWidget(packet_row)
-                # print('added: ' + str(packet_row))
-                ########## values for progress bar  ###########
-                frame_number = int(
-                    re.search(r'\d+', packet_row.text()).group())  # first number of a label (i.e. frame number)
-                total_number_of_rows_in_dataframe = self.df.shape[0]
-                progress = int((frame_number * 100) / total_number_of_rows_in_dataframe)
-                self.int_signal.emit(progress)
-                self.obj_signal.emit(packet_row)
-            except AttributeError:
-                packet_name = "0"  ## I'm not adding the first line of the text because it doesn't contain any packet data
+def setup_for_datatable(self):
+    self.table_view.setColumnWidth(0, 50)
+    self.table_view.setColumnWidth(1, 150)
+    self.table_view.setColumnWidth(3, 200)
+    self.table_view.setColumnWidth(4, 200)
+    self.table_view.setColumnWidth(5, 50)
+    self.table_view.setColumnWidth(6, 589)
 
 
 class DataAnalysisWindow(QWidget):
@@ -162,43 +111,13 @@ class DataAnalysisWindow(QWidget):
         loadUi("data_analysis.ui", self)
         self.btn_open_pcap.clicked.connect(self.read_pcap)
         self.filter_bar.setEnabled(False)
-
-        # super(DataAnalysisWindow, self).__init__()
-        self.setWindowTitle('Data Analysis')
-        # self.btn = QPushButton('Click me')
-        # self.btn.clicked.connect(self.btnFunc)
-        add_progressbar(self)
-        # self.table_view.addStretch()
-
-        # self.resize(300, 100)
-        # self.vbox = QVBoxLayout()
-        # self.vbox.addWidget(self.pbar)
-        # self.vbox.addWidget(self.btn)
-        # self.setLayout(self.vbox)
-        # self.show()
-
-    def add_to_table_view(self, msg):
-        # print("from add_to_table_view: " + msg.text())
-        # print("hey i got an object")
-        print("trying to add:" + str(msg.text()))
-        self.label = QLabel("WTF IS GOING ON")
-        table_view.layout().addWidget(msg)
-        table_view.layout().addWidget(self.label)
-
-        self.show()
-        print('added')
-
-    def signal_accept(self, msg):
-        # print("msg: " + str(msg))
-        self.pbar.setValue(int(msg))
-        if self.pbar.value() >= 99:
-            self.pbar.setValue(0)
-
+        setup_for_datatable(self)
 
     def call_tshark_filter(self):
         filter_argument = self.filter_bar.text()
         show_me_only_what_matters = ' -T fields -E header=y -E separator=, -E quote=d -E occurrence=f -e frame.number -e _ws.col.Time -e ip.src -e ip.dst -e ip.proto -e frame.len -e _ws.col.Info'
-        tshark_command = 'tshark -r ' + path_of_selected_pcap + ' -Y ' + '\"' + filter_argument + '\"'
+        tshark_command = 'tshark -r ' + path_of_selected_pcap + \
+            ' -Y ' + '\"' + filter_argument + '\"'
         stream = os.popen(tshark_command)
         output = stream.read()
 
@@ -207,28 +126,20 @@ class DataAnalysisWindow(QWidget):
         rows = output.split("\n")
 
         # clear the window before showing thsark's answer.
-        clear_analyzer_window(self.table_view.layout(), self)
+        clear_table(self)
 
         ########## POPULATING GUI WITH TSHARK'S ANSWER TO FILTER ###########
+        index = 0
         for row in rows:
-            packet_row = QLabel(row)
-            try:
-                packet_name = re.search(r'\d+', packet_row.text()).group()
-                packet_row.setObjectName(packet_name)
-                packet_row.setAlignment(QtCore.Qt.AlignTop)
-                self.table_view.layout().addWidget(packet_row)
-            except AttributeError:
-                packet_name = "0"
+            self.table_view.setItem(
+                index, 0, QtWidgets.QTableWidgetItem(row["No."]))
+        index = index + 1
 
     def read_pcap(self):
+        # making datatable look pretty
 
-        # layout
-        global table_view
-        table_view = self.table_view
         # clear the window before opening a new pcap
-        clear_analyzer_window(self.table_view.layout(), self)
-        # creating progress bar
-        add_progressbar(self)
+        clear_table(self)
 
         ########### SETUP - SAVING PCAP PATHS ###########
         Tk().withdraw()
@@ -236,18 +147,23 @@ class DataAnalysisWindow(QWidget):
         path_of_selected_pcap = askopenfilename()
         # correcting path from C:/x/x/x/x.pcap -> C:\\x\\x\\x\\x\ x.pcap
         path_of_selected_pcap = os.path.normpath(path_of_selected_pcap)
-        self.tab_father.setTabText(0, str(os.path.basename(path_of_selected_pcap)))
-        path_of_selected_pcap_no_extension = path_of_selected_pcap.replace(".pcap", "")
+        self.tab_father.setTabText(
+            0, str(os.path.basename(path_of_selected_pcap)))
+        path_of_selected_pcap_no_extension = path_of_selected_pcap.replace(
+            ".pcap", "")
         pcap_folder_location = path_of_selected_pcap.rsplit('http.pcap', 1)
         pcap_folder_location = pcap_folder_location[0].rsplit('\\', 1)[0]
         csv_folder = pcap_folder_location + "\\csv_files"
-        name_of_csv = os.path.basename(path_of_selected_pcap_no_extension + '.csv')
+        name_of_csv = os.path.basename(
+            path_of_selected_pcap_no_extension + '.csv')
         csv = csv_folder + "\\" + name_of_csv
         csv_exists = os.path.exists(csv)
 
         ########## CALLING TSHARK ON SELECTED PCAP ###########
         if not csv_exists:
-            thsark_read_pcap = 'tshark -r ' + path_of_selected_pcap + ' -T fields -E header=y -E separator=, -E quote=d -E occurrence=f -e frame.number -e _ws.col.Time -e ip.src -e ip.dst -e ip.proto -e frame.len -e _ws.col.Info >' + path_of_selected_pcap_no_extension + '.csv'
+            thsark_read_pcap = 'tshark -r ' + path_of_selected_pcap + \
+                ' -T fields -E header=y -E separator=, -E quote=d -E occurrence=f -e frame.number -e _ws.col.Time -e ip.src -e ip.dst -e ip.proto -e frame.len -e _ws.col.Info >' + \
+                path_of_selected_pcap_no_extension + '.csv'
             stream = os.popen(thsark_read_pcap)
             output = stream.read()
 
@@ -265,19 +181,24 @@ class DataAnalysisWindow(QWidget):
 
         csv_path = csv_folder + "\\" + name_of_csv
         # print(csv_path)
-        # global df
-        df = pd.read_csv(csv_path, engine='python', error_bad_lines=False)
+        df = pd.read_csv(csv_path)
         pcap_content = df.to_string(index=False)
-        # global rows
         rows = pcap_content.split("\n")
 
         ########## POPULATING GUI WITH EACH ROW OF DATAFRAME  ###########
-        self.thread = Thread(rows, df, self.table_view)
-        self.thread.int_signal.connect(self.signal_accept)
-        self.thread.obj_signal.connect(self.add_to_table_view)
-        self.thread.start()
+        for row in rows:
+            packet_row = QLabel(row)
+            try:
+                packet_name = re.search(r'\d+', packet_row.text()).group()
+                packet_row.setObjectName(packet_name)
+                packet_row.setAlignment(QtCore.Qt.AlignTop)
+                print(packet_row.text())
+                self.table_view.layout().addWidget(packet_row)
+            except AttributeError:
+                # I'm not adding the first line of the text because it doesn't contain any packet data
+                packet_name = "0"
 
-        ##once a file is read, enable the filter bar
+        # once a file is read, enable the filter bar
         self.filter_bar.setEnabled(True)
         self.filter_bar.editingFinished.connect(self.call_tshark_filter)
 
