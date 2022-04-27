@@ -16,7 +16,7 @@
   <property name="styleSheet">
    <string notr="true">QLabel::hover
 {
-	background-color: lightblue;
+	background-color: rgb(207,221,255)
 }
 
 
@@ -539,25 +539,7 @@ QAbstractSpinBox {
     min-width: 50px;
 }</string>
   </property>
-  <widget class="QLabel" name="label">
-   <property name="geometry">
-    <rect>
-     <x>780</x>
-     <y>20</y>
-     <width>121</width>
-     <height>61</height>
-    </rect>
-   </property>
-   <property name="styleSheet">
-    <string notr="true">QLabel{
-font-size: 19px;
-}</string>
-   </property>
-   <property name="text">
-    <string>Data Analysis</string>
-   </property>
-  </widget>
-  <widget class="QLineEdit" name="filter_bar">
+  <widget class="QLineEdit" name="action_bar">
    <property name="geometry">
     <rect>
      <x>200</x>
@@ -570,7 +552,7 @@ font-size: 19px;
     <string/>
    </property>
    <property name="placeholderText">
-    <string>filter bar</string>
+    <string>action bar (filter/remove packets)</string>
    </property>
    <property name="clearButtonEnabled">
     <bool>true</bool>
@@ -619,7 +601,7 @@ font-size: 19px;
           <x>0</x>
           <y>0</y>
           <width>1359</width>
-          <height>612</height>
+          <height>616</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_14">
@@ -628,200 +610,6 @@ font-size: 19px;
          </item>
         </layout>
        </widget>
-      </widget>
-     </item>
-    </layout>
-   </widget>
-   <widget class="QWidget" name="tab_2">
-    <attribute name="title">
-     <string>filename2</string>
-    </attribute>
-    <layout class="QVBoxLayout" name="verticalLayout_2">
-     <item>
-      <widget class="QFrame" name="frame_15">
-       <property name="frameShape">
-        <enum>QFrame::StyledPanel</enum>
-       </property>
-       <property name="frameShadow">
-        <enum>QFrame::Raised</enum>
-       </property>
-       <layout class="QVBoxLayout" name="verticalLayout_18">
-        <item alignment="Qt::AlignTop">
-         <widget class="QFrame" name="frame_11">
-          <property name="frameShape">
-           <enum>QFrame::StyledPanel</enum>
-          </property>
-          <property name="frameShadow">
-           <enum>QFrame::Raised</enum>
-          </property>
-          <layout class="QVBoxLayout" name="verticalLayout_15">
-           <item alignment="Qt::AlignTop">
-            <widget class="QFrame" name="frame_12">
-             <property name="frameShape">
-              <enum>QFrame::StyledPanel</enum>
-             </property>
-             <property name="frameShadow">
-              <enum>QFrame::Raised</enum>
-             </property>
-             <layout class="QHBoxLayout" name="horizontalLayout_3">
-              <item alignment="Qt::AlignTop">
-               <widget class="QLabel" name="label_14">
-                <property name="text">
-                 <string>No.            Time                         Source                     Dest         protocol   len        info</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item>
-            <widget class="QFrame" name="frame_13">
-             <property name="frameShape">
-              <enum>QFrame::StyledPanel</enum>
-             </property>
-             <property name="frameShadow">
-              <enum>QFrame::Raised</enum>
-             </property>
-             <layout class="QVBoxLayout" name="verticalLayout_16">
-              <item>
-               <widget class="QLabel" name="label_15">
-                <property name="text">
-                 <string>1	0.000000	192.168.1.2	192.168.1.255	NBNS	92	Name query NB ECI_DOMAIN&lt;1c&gt;</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="label_16">
-                <property name="text">
-                 <string>2	0.746308	192.168.1.2	192.168.1.255	NBNS	92	Name query Unknown ECI_DOMAIN&lt;1c&gt;</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="label_17">
-                <property name="text">
-                 <string>3	1.497578	217.168.1.2	192.168.1.255	NBNS	92	Name query NB Illegal NetBIOS name (1st character not between A and Z in first-level encoding)[Malformed Packet]</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="label_18">
-                <property name="text">
-                 <string>4	10.816309	Silicom_01:6e:bd	Broadcast	ARP	42	Who has 192.168.1.1? Tell 192.168.1.2</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="label_19">
-                <property name="text">
-                 <string>6	10.816999	192.168.1.2	192.168.1.1	DNS	76	Standard query 0xb2d0 A sip.cybercity.dk[Malformed Packet]</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-     </item>
-    </layout>
-   </widget>
-   <widget class="QWidget" name="tab_file3">
-    <attribute name="title">
-     <string>filename3</string>
-    </attribute>
-    <layout class="QVBoxLayout" name="verticalLayout_8">
-     <item>
-      <widget class="QFrame" name="frame_19">
-       <property name="frameShape">
-        <enum>QFrame::StyledPanel</enum>
-       </property>
-       <property name="frameShadow">
-        <enum>QFrame::Raised</enum>
-       </property>
-       <layout class="QVBoxLayout" name="verticalLayout_21">
-        <item alignment="Qt::AlignTop">
-         <widget class="QFrame" name="frame_20">
-          <property name="frameShape">
-           <enum>QFrame::StyledPanel</enum>
-          </property>
-          <property name="frameShadow">
-           <enum>QFrame::Raised</enum>
-          </property>
-          <layout class="QVBoxLayout" name="verticalLayout_22">
-           <item alignment="Qt::AlignTop">
-            <widget class="QFrame" name="frame_21">
-             <property name="frameShape">
-              <enum>QFrame::StyledPanel</enum>
-             </property>
-             <property name="frameShadow">
-              <enum>QFrame::Raised</enum>
-             </property>
-             <layout class="QHBoxLayout" name="horizontalLayout_5">
-              <item alignment="Qt::AlignTop">
-               <widget class="QLabel" name="label_26">
-                <property name="text">
-                 <string>No.            Time                         Source                     Dest         protocol   len        info</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-           </item>
-           <item>
-            <widget class="QFrame" name="frame_22">
-             <property name="frameShape">
-              <enum>QFrame::StyledPanel</enum>
-             </property>
-             <property name="frameShadow">
-              <enum>QFrame::Raised</enum>
-             </property>
-             <layout class="QVBoxLayout" name="verticalLayout_23">
-              <item>
-               <widget class="QLabel" name="label_27">
-                <property name="text">
-                 <string>6	10.816999	192.168.1.2	192.168.1.1	DNS	76	Standard query 0xb2d0 A sip.cybercity.dk[Malformed Packet]</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="label_28">
-                <property name="text">
-                 <string>40	79.739895	192.168.1.2	147.137.21.94	TCP	62	[TCP Retransmission] 2717 → 445 [SYN] Seq=0 Win=16384 Len=0 MSS=1460 SACK_PERM=1</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="label_29">
-                <property name="text">
-                 <string>55	94.203123	Silicom_01:6e:bd	Castlene_00:34:56	IPv4	54	Bogus IPv4 version (0, must be 4)</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="label_30">
-                <property name="text">
-                 <string>58	94.204169	192.168.1.2	147.234.1.253	TCP	54	[TCP ACKed unseen segment] 2720 → 21 [ACK] Seq=27165 Ack=195 Win=16738 Len=0</string>
-                </property>
-               </widget>
-              </item>
-              <item>
-               <widget class="QLabel" name="label_31">
-                <property name="text">
-                 <string>59	94.204428	147.234.1.253	192.168.1.2	FTP	89	[TCP Previous segment not captured] Response: 252252252252252252252252252252252252252252252252252252252252252252252252252252252252252252252252252252252</string>
-                </property>
-               </widget>
-              </item>
-             </layout>
-            </widget>
-           </item>
-          </layout>
-         </widget>
-        </item>
-       </layout>
       </widget>
      </item>
     </layout>
@@ -839,6 +627,74 @@ font-size: 19px;
    <property name="text">
     <string>open pcap</string>
    </property>
+  </widget>
+  <widget class="QPushButton" name="btn_merge">
+   <property name="geometry">
+    <rect>
+     <x>50</x>
+     <y>170</y>
+     <width>121</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>merge</string>
+   </property>
+  </widget>
+  <widget class="QWidget" name="verticalLayoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>200</x>
+     <y>20</y>
+     <width>1381</width>
+     <height>80</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout_2">
+    <item>
+     <widget class="QLabel" name="label">
+      <property name="styleSheet">
+       <string notr="true">QLabel{
+font-size: 19px;
+background-color: transparent;
+}</string>
+      </property>
+      <property name="text">
+       <string>Data Analysis</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QWidget" name="verticalLayoutWidget_2">
+   <property name="geometry">
+    <rect>
+     <x>439</x>
+     <y>150</y>
+     <width>901</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <layout class="QVBoxLayout" name="verticalLayout">
+    <item>
+     <widget class="QLabel" name="status">
+      <property name="styleSheet">
+       <string notr="true">QLabel{
+background-color: transparent;
+}</string>
+      </property>
+      <property name="text">
+       <string>Status - Ready to Read</string>
+      </property>
+      <property name="alignment">
+       <set>Qt::AlignCenter</set>
+      </property>
+     </widget>
+    </item>
+   </layout>
   </widget>
  </widget>
  <resources/>

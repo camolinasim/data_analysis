@@ -91,18 +91,29 @@ class MainWindow(QMainWindow):
 
 
 # to clear analyzer window
-def clear_table(self):
-    while (self.table_view.rowCount() > 0):
-        self.table_view.removeRow(0)
+def clear_analyzer_window(layout, self):
+    while layout.count():
+        child = layout.takeAt(0)
+        if child.widget():
+            child.widget().deleteLater()
+    top_label = QLabel(
+        " frame.number  _ws.col.Time           ip.src           ip.dst  ip.proto  frame.len                                                                               _ws.col.Info\n")
+    top_label.setAlignment(QtCore.Qt.AlignTop)
+
+    self.table_view.layout().addWidget(top_label)
 
 
-def setup_for_datatable(self):
-    self.table_view.setColumnWidth(0, 50)
-    self.table_view.setColumnWidth(1, 150)
-    self.table_view.setColumnWidth(3, 200)
-    self.table_view.setColumnWidth(4, 200)
-    self.table_view.setColumnWidth(5, 50)
-    self.table_view.setColumnWidth(6, 589)
+def set_status(self, status, warning_or_success='none'):
+    self.status.setText(status)
+    self.status.adjustSize()
+    if(warning_or_success == 'warning'):
+        self.status.setStyleSheet(
+            "QLabel { color : red; background-color: transparent; }")
+    elif(warning_or_success == 'success'):
+        self.status.setStyleSheet(
+            "QLabel { color : lightgreen; background-color: transparent; }")
+    else:
+        return
 
 
 class DataAnalysisWindow(QWidget):
@@ -110,11 +121,12 @@ class DataAnalysisWindow(QWidget):
         super(DataAnalysisWindow, self).__init__()
         loadUi("data_analysis.ui", self)
         self.btn_open_pcap.clicked.connect(self.read_pcap)
-        self.filter_bar.setEnabled(False)
-        setup_for_datatable(self)
+        self.btn_merge.clicked.connect(self.merge_pcaps)
+        self.action_bar.setEnabled(False)
+        self.btn_merge.setEnabled(False)
 
-    def call_tshark_filter(self):
-        filter_argument = self.filter_bar.text()
+    def action_call(self):
+        filter_argument = self.action_bar.text()
         show_me_only_what_matters = ' -T fields -E header=y -E separator=, -E quote=d -E occurrence=f -e frame.number -e _ws.col.Time -e ip.src -e ip.dst -e ip.proto -e frame.len -e _ws.col.Info'
         tshark_command = 'tshark -r ' + path_of_selected_pcap + \
             ' -Y ' + '\"' + filter_argument + '\"'
@@ -126,27 +138,62 @@ class DataAnalysisWindow(QWidget):
         rows = output.split("\n")
 
         # clear the window before showing thsark's answer.
-        clear_table(self)
+        clear_analyzer_window(self.table_view.layout(), self)
 
         ########## POPULATING GUI WITH TSHARK'S ANSWER TO FILTER ###########
-        index = 0
         for row in rows:
-            self.table_view.setItem(
-                index, 0, QtWidgets.QTableWidgetItem(row["No."]))
-        index = index + 1
+            packet_row = QLabel(row)
+            try:
+                packet_name = re.search(r'\d+', packet_row.text()).group()
+                packet_row.setObjectName(packet_name)
+                packet_row.setAlignment(QtCore.Qt.AlignTop)
+                self.table_view.layout().addWidget(packet_row)
+            except AttributeError:
+                packet_name = "0"
+
+    def merge_pcaps(self):
+        pcap1 = path_of_selected_pcap
+        pcap2 = askopenfilename()
+        pcap2 = os.path.normpath(pcap2)
+        pcap1_name = pcap_name.replace(
+            ".pcap", "")
+        pcap2_name = (os.path.basename(pcap2)).replace(
+            ".pcap", "")
+
+        output_file_path = pcap_folder_location + "\\" + \
+            pcap1_name + "_" + pcap2_name + ".pcap"
+        print(output_file_path)
+
+        mergecap_arguments = 'mergecap ' + pcap1 + \
+            ' ' + pcap2 + ' -w ' + output_file_path
+        print("mergecap arguments: " + mergecap_arguments)
+        stream = os.popen(mergecap_arguments)
+        output = stream.read()
+
+        output_file_name = os.path.basename(output_file_path)
+        if(output == ''):
+            set_status(
+                self, f"{output_file_name} has been created -- to view it, open it through the open pcap button", 'success')
+        else:
+            set_status("there was an error merging your files")
 
     def read_pcap(self):
-        # making datatable look pretty
+        global path_of_selected_pcap
+        global pcap_name
+        global pcap_folder_location
+        global csv_folder
 
         # clear the window before opening a new pcap
-        clear_table(self)
+        set_status(self, 'clearing window')
+        clear_analyzer_window(self.table_view.layout(), self)
 
         ########### SETUP - SAVING PCAP PATHS ###########
+        set_status(self, 'Waiting for User\'s  Selection')
         Tk().withdraw()
-        global path_of_selected_pcap
         path_of_selected_pcap = askopenfilename()
         # correcting path from C:/x/x/x/x.pcap -> C:\\x\\x\\x\\x\ x.pcap
         path_of_selected_pcap = os.path.normpath(path_of_selected_pcap)
+        pcap_name = os.path.basename(path_of_selected_pcap)
         self.tab_father.setTabText(
             0, str(os.path.basename(path_of_selected_pcap)))
         path_of_selected_pcap_no_extension = path_of_selected_pcap.replace(
@@ -160,6 +207,7 @@ class DataAnalysisWindow(QWidget):
         csv_exists = os.path.exists(csv)
 
         ########## CALLING TSHARK ON SELECTED PCAP ###########
+        set_status(self, 'calling tshark. . . (this may take a while)')
         if not csv_exists:
             thsark_read_pcap = 'tshark -r ' + path_of_selected_pcap + \
                 ' -T fields -E header=y -E separator=, -E quote=d -E occurrence=f -e frame.number -e _ws.col.Time -e ip.src -e ip.dst -e ip.proto -e frame.len -e _ws.col.Info >' + \
@@ -169,9 +217,12 @@ class DataAnalysisWindow(QWidget):
 
         ########### CREATING FOLDER FOR CSVs ###########
 
+        set_status(self, 'creating csv folder')
+
         if not path.exists(csv_folder):
             os.mkdir(csv_folder)
 
+        set_status(self, 'creating dataframe')
         ########## CREATING DATAFRAME FROM CSV ###########
         if (not csv_exists):
             csv_path = path_of_selected_pcap_no_extension + '.csv'
@@ -181,9 +232,11 @@ class DataAnalysisWindow(QWidget):
 
         csv_path = csv_folder + "\\" + name_of_csv
         # print(csv_path)
-        df = pd.read_csv(csv_path)
+        df = pd.read_csv(csv_path, engine='python', error_bad_lines=False)
         pcap_content = df.to_string(index=False)
         rows = pcap_content.split("\n")
+
+        set_status(self, 'populating GUI')
 
         ########## POPULATING GUI WITH EACH ROW OF DATAFRAME  ###########
         for row in rows:
@@ -198,9 +251,12 @@ class DataAnalysisWindow(QWidget):
                 # I'm not adding the first line of the text because it doesn't contain any packet data
                 packet_name = "0"
 
+        set_status(self, "enabling filter bar")
         # once a file is read, enable the filter bar
-        self.filter_bar.setEnabled(True)
-        self.filter_bar.editingFinished.connect(self.call_tshark_filter)
+        self.action_bar.setEnabled(True)
+        self.action_bar.editingFinished.connect(self.action_call)
+        set_status(self, '')
+        self.btn_merge.setEnabled(True)
 
 
 class ProjectCreateWindow(QWidget):
