@@ -562,7 +562,7 @@ QAbstractSpinBox {
    <property name="geometry">
     <rect>
      <x>200</x>
-     <y>170</y>
+     <y>190</y>
      <width>1381</width>
      <height>661</height>
     </rect>
@@ -587,7 +587,7 @@ QAbstractSpinBox {
    </property>
    <widget class="QWidget" name="tab1">
     <attribute name="title">
-     <string>filename1</string>
+     <string>tab0</string>
     </attribute>
     <layout class="QVBoxLayout" name="verticalLayout_6">
      <item>
@@ -601,12 +601,59 @@ QAbstractSpinBox {
           <x>0</x>
           <y>0</y>
           <width>1359</width>
-          <height>616</height>
+          <height>612</height>
          </rect>
         </property>
         <layout class="QVBoxLayout" name="verticalLayout_14">
          <item>
-          <layout class="QVBoxLayout" name="table_view"/>
+          <layout class="QHBoxLayout" name="stats_frame">
+           <item alignment="Qt::AlignLeft">
+            <widget class="QLabel" name="stats_title">
+             <property name="text">
+              <string>Protocol Statistics:</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QTableWidget" name="table_view">
+           <column>
+            <property name="text">
+             <string>No.</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Time</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Source</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Destination</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Protocol</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Length</string>
+            </property>
+           </column>
+           <column>
+            <property name="text">
+             <string>Info</string>
+            </property>
+           </column>
+          </widget>
          </item>
         </layout>
        </widget>
@@ -614,31 +661,351 @@ QAbstractSpinBox {
      </item>
     </layout>
    </widget>
+   <widget class="QWidget" name="tab2">
+    <attribute name="title">
+     <string>Page</string>
+    </attribute>
+    <widget class="QScrollArea" name="scrollArea_2">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>1361</width>
+       <height>614</height>
+      </rect>
+     </property>
+     <property name="widgetResizable">
+      <bool>true</bool>
+     </property>
+     <widget class="QWidget" name="scrollAreaWidgetContents_3">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>1359</width>
+        <height>612</height>
+       </rect>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_15">
+       <item>
+        <layout class="QHBoxLayout" name="stats_frame_1">
+         <item alignment="Qt::AlignLeft">
+          <widget class="QLabel" name="stats_title_1">
+           <property name="text">
+            <string>Protocol Statistics:</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QTableWidget" name="table_view_1">
+         <column>
+          <property name="text">
+           <string>No.</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Time</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Source</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Destination</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Protocol</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Length</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Info</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="tab3">
+    <attribute name="title">
+     <string>Page</string>
+    </attribute>
+    <widget class="QScrollArea" name="scrollArea_3">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>1361</width>
+       <height>614</height>
+      </rect>
+     </property>
+     <property name="widgetResizable">
+      <bool>true</bool>
+     </property>
+     <widget class="QWidget" name="scrollAreaWidgetContents_4">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>1359</width>
+        <height>612</height>
+       </rect>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_16">
+       <item>
+        <layout class="QHBoxLayout" name="stats_frame_2">
+         <item alignment="Qt::AlignLeft">
+          <widget class="QLabel" name="stats_title_2">
+           <property name="text">
+            <string>Protocol Statistics:</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QTableWidget" name="table_view_2">
+         <column>
+          <property name="text">
+           <string>No.</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Time</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Source</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Destination</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Protocol</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Length</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Info</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="tab_2">
+    <attribute name="title">
+     <string>Page</string>
+    </attribute>
+    <widget class="QScrollArea" name="scrollArea_4">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>1361</width>
+       <height>614</height>
+      </rect>
+     </property>
+     <property name="widgetResizable">
+      <bool>true</bool>
+     </property>
+     <widget class="QWidget" name="scrollAreaWidgetContents_5">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>1359</width>
+        <height>612</height>
+       </rect>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_17">
+       <item>
+        <layout class="QHBoxLayout" name="stats_frame_3">
+         <item alignment="Qt::AlignLeft">
+          <widget class="QLabel" name="stats_title_3">
+           <property name="text">
+            <string>Protocol Statistics:</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QTableWidget" name="table_view_3">
+         <column>
+          <property name="text">
+           <string>No.</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Time</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Source</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Destination</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Protocol</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Length</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Info</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </widget>
+   <widget class="QWidget" name="tab_3">
+    <attribute name="title">
+     <string>Page</string>
+    </attribute>
+    <widget class="QScrollArea" name="scrollArea_5">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>10</y>
+       <width>1361</width>
+       <height>614</height>
+      </rect>
+     </property>
+     <property name="widgetResizable">
+      <bool>true</bool>
+     </property>
+     <widget class="QWidget" name="scrollAreaWidgetContents_6">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>1359</width>
+        <height>612</height>
+       </rect>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout_18">
+       <item>
+        <layout class="QHBoxLayout" name="stats_frame_4">
+         <item alignment="Qt::AlignLeft">
+          <widget class="QLabel" name="stats_title_4">
+           <property name="text">
+            <string>Protocol Statistics:</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+       <item>
+        <widget class="QTableWidget" name="table_view_4">
+         <column>
+          <property name="text">
+           <string>No.</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Time</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Source</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Destination</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Protocol</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Length</string>
+          </property>
+         </column>
+         <column>
+          <property name="text">
+           <string>Info</string>
+          </property>
+         </column>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </widget>
+   </widget>
   </widget>
   <widget class="QPushButton" name="btn_open_pcap">
    <property name="geometry">
     <rect>
-     <x>50</x>
+     <x>60</x>
      <y>110</y>
      <width>121</width>
      <height>31</height>
     </rect>
    </property>
    <property name="text">
-    <string>open pcap</string>
+    <string>Open Pcap</string>
    </property>
   </widget>
   <widget class="QPushButton" name="btn_merge">
    <property name="geometry">
     <rect>
-     <x>50</x>
-     <y>170</y>
+     <x>60</x>
+     <y>190</y>
      <width>121</width>
      <height>31</height>
     </rect>
    </property>
    <property name="text">
-    <string>merge</string>
+    <string>Merge</string>
    </property>
   </widget>
   <widget class="QWidget" name="verticalLayoutWidget">
@@ -672,7 +1039,7 @@ background-color: transparent;
   <widget class="QWidget" name="verticalLayoutWidget_2">
    <property name="geometry">
     <rect>
-     <x>439</x>
+     <x>440</x>
      <y>150</y>
      <width>901</width>
      <height>31</height>
@@ -695,6 +1062,35 @@ background-color: transparent;
      </widget>
     </item>
    </layout>
+  </widget>
+  <widget class="QLabel" name="lbl_movie">
+   <property name="enabled">
+    <bool>true</bool>
+   </property>
+   <property name="geometry">
+    <rect>
+     <x>790</x>
+     <y>350</y>
+     <width>210</width>
+     <height>250</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string/>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="btn_save">
+   <property name="geometry">
+    <rect>
+     <x>60</x>
+     <y>250</y>
+     <width>121</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Save As</string>
+   </property>
   </widget>
  </widget>
  <resources/>
